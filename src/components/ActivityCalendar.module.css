@@ -1,0 +1,55 @@
+.calendarWrapper {
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.headerCell {
+  text-align: center;
+  font-weight: bold;
+  color: #777;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.cell,
+.emptyCell {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #f9fafb;
+  transition: background-color 0.2s;
+}
+
+.today {
+  border: 2px solid #4f46e5;
+  font-weight: bold;
+}
+
+.activeDay {
+  background-color: #c6f6d5;
+  color: #1d4ed8;
+}
+
+.cell:hover {
+  background-color: #e5e7eb;
+}
+
+.emptyCell {
+  visibility: hidden;
+}
