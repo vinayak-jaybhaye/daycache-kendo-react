@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Entry from "./Entry";
+import { Skeleton } from "@progress/kendo-react-indicators";
 import {
   Card,
   CardHeader,
@@ -9,9 +10,7 @@ import {
   CardActions,
   PanelBar,
 } from "@progress/kendo-react-layout";
-import { Badge } from "@progress/kendo-react-indicators";
 import AddEntry from "./AddEntry";
-import { Loader } from "@progress/kendo-react-indicators";
 
 const Day = ({ date, userId }) => {
   const [day, setDay] = useState(null);
@@ -84,15 +83,61 @@ const Day = ({ date, userId }) => {
 
   if (loading) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100px",
-        }}
-      >
-        <Loader size="large" type="pulsing" />
+      <div className="mb-4 md:mb-6">
+        {/* Header Skeleton */}
+        <div className="border-b border-pink-200 pb-3 md:pb-4">
+          <Skeleton
+            shape="rectangle"
+            style={{ width: 200, height: 32, marginBottom: 8 }}
+          />
+          <Skeleton shape="text" style={{ width: 150, height: 24 }} />
+        </div>
+
+        {/* Main Content Skeleton */}
+        <div className="w-[100%] mx-auto p-2 md:p-8 bg-rose-50 rounded-xl md:rounded-2xl shadow-lg mt-2 md:mt-8">
+          {/* Add Entry Button Skeleton */}
+          <div className="mb-4">
+            <Skeleton
+              shape="rectangle"
+              style={{ width: 120, height: 40, borderRadius: 20 }}
+            />
+          </div>
+
+          {/* Entries List Skeleton */}
+          <Card>
+            <CardHeader>
+              <Skeleton shape="text" style={{ width: 80, height: 24 }} />
+            </CardHeader>
+            <CardBody>
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="mb-4 p-4 bg-white rounded-lg">
+                  <Skeleton
+                    shape="text"
+                    style={{ width: "70%", height: 20, marginBottom: 8 }}
+                  />
+                  <Skeleton shape="text" style={{ width: "90%", height: 16 }} />
+                  <Skeleton
+                    shape="text"
+                    style={{ width: 120, height: 14, marginTop: 8 }}
+                  />
+                </div>
+              ))}
+            </CardBody>
+
+            {/* Summary Section Skeleton */}
+            <div className="mt-6 p-4 bg-white rounded-lg">
+              <Skeleton
+                shape="text"
+                style={{ width: 120, height: 24, marginBottom: 12 }}
+              />
+              <Skeleton
+                shape="text"
+                style={{ width: "100%", height: 60, marginBottom: 12 }}
+              />
+              <Skeleton shape="rectangle" style={{ width: 160, height: 36 }} />
+            </div>
+          </Card>
+        </div>
       </div>
     );
   }
@@ -115,7 +160,7 @@ const Day = ({ date, userId }) => {
           </span>
         </div>
       }
-      <div className="w-[100%] h-[100%] mx-auto p-2 md:p-8 bg-rose-50 rounded-xl md:rounded-2xl shadow-lg mt-2 md:mt-8 border border-opacity-10 border-pink-200 overflow-auto scrollbar-hide flex flex-col gap-2">
+      <div className="w-[100%] h-[100%] mx-auto p-2 md:p-8 bg-gray-50 rounded-xl md:rounded-2xl shadow-lg mt-2 md:mt-8 border border-opacity-10 border-pink-200 overflow-auto scrollbar-hide flex flex-col gap-2">
         <AddEntry
           date={date}
           onEntryAdded={(newEntry) => setEntries((prev) => [...prev, newEntry])}
@@ -156,7 +201,7 @@ const Day = ({ date, userId }) => {
                 <CardActions>
                   <button
                     onClick={generateSummary}
-                    className="px-4 py-2 bg-pink-500 text-white rounded-md shadow-md hover:shadow-lg transition"
+                    className="px-4 py-2 bg-green-500 text-white rounded-md shadow-md hover:shadow-lg transition"
                   >
                     Generate Summary
                   </button>

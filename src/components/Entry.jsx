@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import Media from "./Media";
 import { Button } from "@progress/kendo-react-buttons";
+import { Dialog, DialogActionsBar } from "@progress/kendo-react-dialogs";
 
 const Entry = ({ entry, onDelete }) => {
   if (!entry) return null;
   const [content, setContent] = useState(entry.content);
   const [isEditing, setIsEditing] = useState(false);
+  const [visibleDialog, setVisibleDialog] = useState(false);
+  const toggleDialog = () => {
+    setVisibleDialog(!visibleDialog);
+  };
 
   const handleEdit = () => {
     setIsEditing(!isEditing);
@@ -59,10 +64,31 @@ const Entry = ({ entry, onDelete }) => {
     } catch (error) {
       console.error("Failed to delete entry:", error);
     }
+    toggleDialog();
   };
 
   return (
     <div className="bg-white shadow-md rounded-xl p-6 mb-4 transition-all hover:shadow-lg border border-gray-100">
+      {visibleDialog && (
+        <Dialog title={"Please confirm"} onClose={toggleDialog}>
+          <p
+            style={{
+              margin: "25px",
+              textAlign: "center",
+            }}
+          >
+            Are you sure you want to continue?
+          </p>
+          <DialogActionsBar>
+            <Button type="button" onClick={toggleDialog}>
+              No
+            </Button>
+            <Button type="button" onClick={handleDelete}>
+              Yes
+            </Button>
+          </DialogActionsBar>
+        </Dialog>
+      )}
       {isEditing ? (
         <textarea
           value={content}
@@ -83,10 +109,8 @@ const Entry = ({ entry, onDelete }) => {
           {content || "Write something..."}
         </p>
       )}
-
       {entry.media?.length > 0 &&
         entry.media.map((item) => <Media key={item.id} media={item} />)}
-
       <div className="flex items-center justify-between">
         <p className="text-xs text-gray-500 ">
           {new Date(entry.created_at).toLocaleString("en-US", {
@@ -119,7 +143,7 @@ const Entry = ({ entry, onDelete }) => {
           )}
 
           <Button
-            onClick={handleDelete}
+            onClick={toggleDialog}
             className="px-5 py-2 text-white rounded-lg transition-colors font-medium hover:bg-gray-200"
           >
             <img src="delete.svg" alt="Edit" className="h-4 w-4" />

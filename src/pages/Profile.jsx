@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser, clearUser } from "../store/userSlice";
-import { Button } from "@progress/kendo-react-buttons";
+import { Button, ButtonGroup } from "@progress/kendo-react-buttons";
 import { Loader } from "@progress/kendo-react-indicators";
 import { Avatar } from "@progress/kendo-react-layout";
 import { ActivityCalendar } from "../components";
@@ -19,10 +19,13 @@ function Profile() {
     } else {
       const fetchUser = async () => {
         try {
-          const response = await fetch(`${import.meta.env.VITE_API_URL}/users/me`, {
-            method: "GET",
-            credentials: "include",
-          });
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/users/me`,
+            {
+              method: "GET",
+              credentials: "include",
+            }
+          );
 
           if (!response.ok) throw new Error("User not authenticated");
 
@@ -48,10 +51,13 @@ function Profile() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/logout`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to logout");
 
@@ -92,19 +98,21 @@ function Profile() {
                 </h1>
                 <p className="text-gray-500 mt-1">{userData.email}</p>
               </div>
-              <Button
-                themeColor={"primary"}
-                className="px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all"
-                onClick={handleLogout}
-              >
-                Logout
-              </Button>
-              <Button
-                themeColor="primary"
-                className="px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all"
-              >
-                Edit Profile
-              </Button>
+              <ButtonGroup>
+                <Button
+                  themeColor={"primary"}
+                  className="px-6 py-3 mr-4 rounded-lg shadow-md hover:shadow-lg transition-all"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </Button>
+                <Button
+                  themeColor="primary"
+                  className="px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all"
+                >
+                  Edit Profile
+                </Button>
+              </ButtonGroup>
             </div>
 
             <div className="flex justify-end gap-10">

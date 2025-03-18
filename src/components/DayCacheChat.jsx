@@ -3,6 +3,9 @@ import { useSelector } from "react-redux";
 import { Input } from "@progress/kendo-react-inputs";
 import { Button } from "@progress/kendo-react-buttons";
 import { Loader } from "@progress/kendo-react-indicators";
+import { paperPlaneIcon } from "@progress/kendo-svg-icons";
+
+import { Slide, Fade, Zoom, Reveal } from "@progress/kendo-react-animation";
 
 function DayCacheChat() {
   const user = useSelector((state) => state.user.user);
@@ -58,82 +61,107 @@ function DayCacheChat() {
   };
 
   return (
-    <div className="fixed bottom-18 right-14 flex flex-col w-96 h-[600px] bg-gradient-to-br from-rose-50 to-amber-50 border border-rose-100 rounded-2xl shadow-xl p-0 overflow-hidden transform transition-all duration-300 hover:shadow-2xl">
-      {/* Chat Header */}
-      <div className="bg-gradient-to-r from-rose-200 to-pink-200 p-4 border-b border-rose-100 flex items-center justify-evenly">
-        <h2 className="text-xl font-bold text-rose-800 flex items-center gap-2">
-          <span className="text-2xl">💬</span>
-          DayCache Chat
-        </h2>
-      </div>
+    <div className="flex flex-col w-full h-full bg-gradient-to-br border rounded-xl from-rose-50 to-amber-50  shadow-2xl overflow-hidden transform transition-all duration-300 hover:shadow-2xl">
+      {/* Animated Header */}
+      <Fade transitionEnterDuration={500}>
+        <div className="bg-[#FAFAFC] p-4  flex items-center justify-center">
+          <h2 className="text-xl font-bold text-black flex items-center gap-3">
+            <Zoom appear={true} transitionEnterDuration={500}>
+              <span className="text-2xl">💬</span>
+            </Zoom>
+            <Slide appear={true} direction="up" transitionEnterDuration={500}>
+              <span>DayCache Chat</span>
+            </Slide>
+          </h2>
+        </div>
+      </Fade>
 
-      {/* Chat Messages */}
+      {/* Chat Messages Container */}
       <div ref={chatRef} className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((msg, index) => (
           <div
             key={index}
             className={`flex items-start gap-2 ${
-              msg.sender === "user" ? "flex-row-reverse" : "flex-row"
+              msg.sender === "user"
+                ? "justify-start flex-row-reverse"
+                : "justify-start"
             }`}
           >
-            <div
-              className={`w-7 h-7 flex items-center justify-center rounded-full ${
-                msg.sender === "user"
-                  ? "bg-gradient-to-br from-rose-400 to-pink-400"
-                  : "bg-gradient-to-br from-amber-400 to-orange-400"
-              }`}
+            {/* Animated Avatar */}
+            <Zoom appear={true} transitionEnterDuration={200}>
+              <div
+                className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                  msg.sender === "user"
+                    ? "bg-gradient-to-br from-rose-400 to-pink-400"
+                    : "bg-gradient-to-br from-amber-400 to-orange-400"
+                }`}
+              >
+                {msg.sender === "user" ? (
+                  <span className="text-white text-sm">👤</span>
+                ) : (
+                  <span className="text-white text-sm">🤖</span>
+                )}
+              </div>
+            </Zoom>
+
+            {/* Animated Message Bubble */}
+            <Slide
+              appear={true}
+              transitionEnterDuration={250}
+              transitionExitDuration={200}
+              direction={msg.sender === "user" ? "right" : "left"}
+              className="w-[70%]"
             >
-              {msg.sender === "user" ? (
-                <span className="text-white text-sm">👤</span>
-              ) : (
-                <span className="text-white text-sm">🤖</span>
-              )}
-            </div>
-            <div
-              className={`max-w-[75%] p-3 rounded-2xl text-sm transition-all duration-200 ${
-                msg.sender === "user"
-                  ? "bg-gradient-to-br from-rose-500 to-pink-500 text-white shadow-md"
-                  : "bg-white text-gray-700 border border-amber-100 shadow-md"
-              }`}
-            >
-              {msg.text}
-            </div>
+              <div
+                className={`max-w-[100%] p-3 rounded-lg text-sm ${
+                  msg.sender === "user"
+                    ? "bg-gradient-to-br from-rose-500 to-pink-500 text-white shadow-lg"
+                    : "bg-gray-100 text-gray-800 shadow-md"
+                }`}
+              >
+                <Reveal transitionEnterDuration={400}>
+                  <div className="leading-relaxed">{msg.text}</div>
+                </Reveal>
+              </div>
+            </Slide>
           </div>
         ))}
+
+        {/* Animated Loading Indicator */}
         {loading && (
-          <div className="flex justify-center pt-2">
-            <div className="bg-white px-3 py-2 rounded-full shadow-sm border border-amber-100">
-              <Loader
-                themeColor="primary"
-                size="small"
-                className="text-rose-500"
-              />
+          <Fade transitionEnterDuration={300} transitionExitDuration={200}>
+            <div className="flex justify-center pt-2">
+              <Reveal transitionEnterDuration={400}>
+                <div className="bg-gray-100 px-4 py-2 rounded-full shadow-md border border-gray-200">
+                  <Loader
+                    themeColor="primary"
+                    size="small"
+                    className="text-rose-500"
+                  />
+                </div>
+              </Reveal>
             </div>
-          </div>
+          </Fade>
         )}
       </div>
 
-      {/* Input Area */}
-      <div className="p-4 border-t border-rose-100 bg-white/50 backdrop-blur-sm">
-        <div className="flex gap-2">
+      {/* Animated Input Area */}
+      <div className="p-4 border-t  border-rose-100 bg-white/50 backdrop-blur-sm">
+        <div className="flex justify-between">
           <Input
             value={input}
             onChange={(e) => setInput(e.value)}
             placeholder="Type your message..."
-            className="flex-1 border-2 border-rose-100 rounded-xl p-2 text-sm focus:border-rose-200 focus:ring-0 placeholder:text-rose-300"
           />
-          <Button
-            themeColor="primary"
-            onClick={handleSend}
-            className={`rounded-xl px-4 transition-all ${
-              loading
-                ? "bg-rose-300 border-rose-300 cursor-not-allowed"
-                : "bg-gradient-to-br from-rose-400 to-pink-400 hover:from-rose-500 hover:to-pink-500"
-            }`}
-            disabled={loading}
-          >
-            {loading ? "✈️..." : "Send"}
-          </Button>
+          <Slide direction="up" appear={true} transitionEnterDuration={300}>
+            <Button
+              themeColor="primary"
+              onClick={handleSend}
+              style={{ backgroundColor: "green", color: "whitesmoke" }}
+              disabled={loading}
+              svgIcon={paperPlaneIcon}
+            ></Button>
+          </Slide>
         </div>
       </div>
     </div>

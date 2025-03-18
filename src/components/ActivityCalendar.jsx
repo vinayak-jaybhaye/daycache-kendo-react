@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@progress/kendo-react-layout";
 import styles from "./ActivityCalendar.module.css";
-import { Loader } from "@progress/kendo-react-indicators";
+import { Loader, Skeleton } from "@progress/kendo-react-indicators";
 
 const ActivityCalendar = ({ date }) => {
   const [activeDays, setActiveDays] = useState({});
@@ -53,7 +53,6 @@ const ActivityCalendar = ({ date }) => {
         "0"
       )}-${String(day).padStart(2, "0")}`;
       const isActive = activeDays[dateString];
-      console.log(dateString, isActive);
       const isToday = dateString === new Date().toISOString().split("T")[0];
 
       days.push(
@@ -75,7 +74,35 @@ const ActivityCalendar = ({ date }) => {
   return (
     <Card className={styles.calendarWrapper}>
       {loading ? (
-        <Loader size="large" />
+        <div className={styles.skeletonContainer}>
+          {/* weekdays header */}
+          <div className={styles.header}>
+            {[...Array(7)].map((_, i) => (
+              <Skeleton
+                key={i}
+                shape="rectangle"
+                style={{ width: "100%", height: 24, margin: "0 2px" }}
+                className={styles.headerCell}
+              />
+            ))}
+          </div>
+
+          {/* calendar grid skeleton */}
+          <div className={styles.grid}>
+            {[...Array(35)].map((_, i) => (
+              <Skeleton
+                key={i}
+                shape="rectangle"
+                style={{
+                  width: "100%",
+                  height: 40,
+                  borderRadius: 4,
+                  margin: 2,
+                }}
+              />
+            ))}
+          </div>
+        </div>
       ) : (
         <>
           <div className={styles.header}>

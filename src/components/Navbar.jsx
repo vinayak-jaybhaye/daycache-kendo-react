@@ -8,6 +8,10 @@ import {
 import { Button, FloatingActionButton } from "@progress/kendo-react-buttons";
 import { bellIcon, menuIcon, homeIcon } from "@progress/kendo-svg-icons";
 import { Badge, BadgeContainer } from "@progress/kendo-react-indicators";
+import { Label } from "@progress/kendo-react-labels";
+import { Input } from "@progress/kendo-react-inputs";
+
+import { Window } from "@progress/kendo-react-dialogs";
 
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,10 +22,14 @@ const Navbar = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [askingCache, setAskingCache] = useState(false);
-
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [visible, setVisible] = useState(false);
+  const toggleDialog = () => {
+    setVisible(!visible);
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -74,14 +82,19 @@ const Navbar = () => {
       <AppBar>
         {/* Left Section: Logo */}
         <AppBarSection className="mr-auto">
-          <h1 className="text-2xl font-extrabold text-indigo-600 cursor-pointer hover:text-indigo-800 transition duration-300">
+          <h1
+            className="text-2xl font-extrabold text-indigo-600 cursor-pointer hover:text-indigo-800 transition duration-300"
+            onClick={() => {
+              if (userData) navigate("/");
+            }}
+          >
             DayCache
           </h1>
         </AppBarSection>
 
         <AppBarSpacer style={{ width: 100 }} />
 
-        {/* Center Section: Links - Only shown when logged in */}
+        {/* Only shown when logged in */}
         {userData ? (
           <>
             <AppBarSection className="flex gap-4">
@@ -113,7 +126,13 @@ const Navbar = () => {
             <AppBarSection>
               <FloatingActionButton
                 disabled={false}
-                onClick={() => setAskingCache((prev) => !prev)}
+                // onClick={() => setAskingCache((prev) => !prev)}
+                onClick={toggleDialog}
+                style={{
+                  backgroundColor: "slateblue",
+                  color: "whitesmoke",
+                  border: "none",
+                }}
                 text="Ask Cache"
               />
             </AppBarSection>
@@ -150,14 +169,22 @@ const Navbar = () => {
           </>
         )}
       </AppBar>
-      <div className="text-center absolute">
-        {askingCache && (
-          <DayCacheChat
-            userId={userData.id}
-            onClose={() => setAskingCache(false)}
-          />
-        )}
-      </div>
+
+      {visible && (
+        <Window
+          title={"Chat With Cache"}
+          onClose={toggleDialog}
+          initialHeight={500}
+          initialWidth={400}
+          resizable={true}
+          draggable={true}
+          style={{ backgroundColor: "#F9FAFB", borderRadius: 20 }}
+          rounded={true}
+          themeColor="primary"
+        >
+          <DayCacheChat userId={userData?.id} onClose={() => toggleDialog()} />
+        </Window>
+      )}
     </div>
   );
 };
