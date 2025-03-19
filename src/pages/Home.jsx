@@ -152,6 +152,31 @@ const Home = () => {
       .map((d) => d.date);
   };
 
+  const CustomListBoxItem = (props) => {
+    const { dataItem, onClick } = props;
+
+    return (
+      <div
+        className={`flex items-center justify-between w-full p-3 cursor-pointer border rounded-xl shadow-lg transition-transform transform hover:scale-105 ${
+          dataItem.selected
+            ? "bg-gradient-to-r from-rose-50 to-pink-50 border-pink-200"
+            : "bg-white border-gray-100"
+        }`}
+        onClick={onClick}
+      >
+        <span
+          className={`${
+            sidebarHidden
+              ? "text-sm text-gray-500"
+              : "text-lg font-serif font-semibold text-gray-800"
+          }`}
+        >
+          {dataItem.formatted}
+        </span>
+      </div>
+    );
+  };
+
   const handleSelect = (e) => {
     setSelectedDay(e.dataItem.date);
   };
@@ -159,21 +184,26 @@ const Home = () => {
   // console.log(listDates);
 
   return (
-    <div className="flex justify-center gap-2 h-[89vh] bg-gray-100 overflow-auto scrollbar-hide">
+    <div className="flex justify-center gap-2 h-[89vh] rounded-2xl overflow-auto scrollbar-hide">
       <Drawer
         expanded={!sidebarHidden}
         width={sidebarHidden ? 64 : 320}
-        style={{ backgroundColor: "transparent" }}
+        style={{
+          backgroundColor: "white",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+          borderRadius: "12px",
+          overflow: "hidden",
+        }}
       >
-        <div className="h-full flex flex-col">
+        <div className="h-full flex flex-col rounded-2xl">
           {!sidebarHidden && (
-            <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-b">
+            <div className="flex items-center justify-between bg-[#FDF2F8] rounded-t-2xl px-4 py-3 border-b border-amber-500">
               <div className="flex items-center gap-2">
                 <Button
                   type="button"
                   onClick={() => handleYearChange(-1)}
-                  className="p-2 rounded-full hover:bg-gray-200 transition"
                   svgIcon={chevronDoubleLeftIcon}
+                  style={{ backgroundColor: "#EC4899" }}
                 ></Button>
                 <span className="text-lg font-semibold text-gray-700">
                   {currentMonth.toLocaleString("default", { year: "numeric" })}
@@ -182,12 +212,8 @@ const Home = () => {
                   type="button"
                   onClick={() => handleYearChange(1)}
                   disabled={isNextYearDisabled()}
-                  className={`p-2 rounded-full transition ${
-                    isNextYearDisabled()
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-gray-200"
-                  }`}
                   svgIcon={chevronDoubleRightIcon}
+                  style={{ backgroundColor: "#EC4899", marginRight: "1rem" }}
                 ></Button>
               </div>
 
@@ -195,8 +221,8 @@ const Home = () => {
                 <Button
                   type="button"
                   onClick={() => handleMonthChange(-1)}
-                  className="p-2 rounded-full hover:bg-gray-200 transition"
                   svgIcon={chevronDoubleLeftIcon}
+                  style={{ backgroundColor: "#EC4899" }}
                 ></Button>
                 <span className="text-lg font-semibold text-gray-700">
                   {currentMonth.toLocaleString("default", { month: "long" })}
@@ -205,37 +231,25 @@ const Home = () => {
                   type="button"
                   onClick={() => handleMonthChange(1)}
                   disabled={isNextMonthDisabled()}
-                  className={`p-2 rounded-full transition ${
-                    isNextMonthDisabled()
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-gray-200"
-                  }`}
                   svgIcon={chevronDoubleRightIcon}
+                  style={{ backgroundColor: "#EC4899" }}
                 ></Button>
               </div>
             </div>
           )}
 
-          {!sidebarHidden && (
-            <div className="flex-grow overflow-auto">
-              <ListBox
-                data={listDates}
-                textField="formatted"
-                selectedField="selected"
-                onItemClick={handleSelect}
-                style={{ height: "100%", width: "100%" }}
-                itemRender={(item) => (
-                  <div
-                    className={item.isToday ? "diary-sidebar-item-today" : ""}
-                  >
-                    {item.formatted}
-                  </div>
-                )}
-              />
-            </div>
-          )}
+          <div className="flex-grow overflow-auto">
+            <ListBox
+              data={listDates}
+              textField="formatted"
+              selectedField="selected"
+              onItemClick={handleSelect}
+              style={{ height: "100%", width: "100%" }}
+              item={CustomListBoxItem}
+            />
+          </div>
 
-          <div className="flex justify-end bg-gray-50 mt-auto p-2">
+          <div className="flex justify-end bg-[#FDF2F8] mt-auto p-2 rounded-b-2xl">
             <Button
               type="button"
               fillMode="flat"
@@ -256,7 +270,15 @@ const Home = () => {
           sidebarHidden ? "w-full" : "w-[80%]"
         } h-[100%] transition-all duration-300`}
       >
-        <div className="rounded-xl bg-gray-50 shadow-xl p-8 border border-gray-300 w-[100%] h-[100%] overflow-auto scrollbar-hide">
+        <div
+          className="rounded-3xl bg-[url('https://www.transparenttextures.com/patterns/old-moon.png')] bg-cover bg-no-repeat shadow-2xl p-8 border border-[#D6C2A7] w-[100%] h-[100%] overflow-auto scrollbar-hide"
+          style={{
+            backgroundColor: "#F5F5DC",
+            boxShadow:
+              "inset 0 0 8px rgba(0,0,0,0.2), 0 4px 10px rgba(0,0,0,0.15)",
+            fontFamily: "'Times New Roman', serif",
+          }}
+        >
           {userData && (
             <div className="mt-8 w-[100%]">
               <Day date={selectedDay} userId={userData.id} />

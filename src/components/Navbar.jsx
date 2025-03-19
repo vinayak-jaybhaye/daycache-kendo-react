@@ -79,7 +79,15 @@ const Navbar = () => {
         if (askingCache) setAskingCache(false);
       }}
     >
-      <AppBar>
+      <AppBar
+        style={{
+          backgroundColor: "#F9F5EC",
+          color: "#6B4226",
+          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
+          fontFamily: "'Georgia', serif",
+          borderBottom: "2px solid #E2D4C3",
+        }}
+      >
         {/* Left Section: Logo */}
         <AppBarSection className="mr-auto">
           <h1

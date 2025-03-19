@@ -146,7 +146,7 @@ const Day = ({ date, userId }) => {
     <>
       {
         <div className="mb-4 md:mb-6 border-b border-pink-200 pb-3 md:pb-4">
-          <h1 className="text-2xl md:text-3xl font-serif text-gray-700 mb-1 md:mb-2">
+          <h1 className="text-2xl md:text-3xl font-serif text-[#6B4226] mb-2 md:mb-3 tracking-wide shadow-sm">
             {new Date(date).toLocaleDateString("en-US", {
               weekday: "long",
               year: "numeric",
@@ -160,7 +160,7 @@ const Day = ({ date, userId }) => {
           </span>
         </div>
       }
-      <div className="w-[100%] h-[100%] mx-auto p-2 md:p-8 bg-gray-50 rounded-xl md:rounded-2xl shadow-lg mt-2 md:mt-8 border border-opacity-10 border-pink-200 overflow-auto scrollbar-hide flex flex-col gap-2">
+      <div className="w-[100%] h-[100%] mx-auto p-2 md:p-8 bg-[#FAF0E6] rounded-xl md:rounded-2xl shadow-lg mt-2 md:mt-8 border border-[#D2B48C] overflow-auto scrollbar-hide flex flex-col gap-2">
         <AddEntry
           date={date}
           onEntryAdded={(newEntry) => setEntries((prev) => [...prev, newEntry])}
