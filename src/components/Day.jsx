@@ -169,7 +169,7 @@ const Day = ({ date, userId }) => {
           {/* Entries List */}
 
           <CardHeader>
-            <CardTitle>Entries</CardTitle>
+            <CardTitle>Today's Highlights</CardTitle>
           </CardHeader>
 
           <CardBody>
@@ -181,7 +181,7 @@ const Day = ({ date, userId }) => {
               <div className="k-panelbar-item bg-white/90 rounded-lg">
                 <div className="k-item-wrapper p-3 md:p-4 text-center">
                   <span className="text-gray-400 italic text-sm md:text-base">
-                    No entries found for this day
+                    No highlights found for this day
                   </span>
                 </div>
               </div>

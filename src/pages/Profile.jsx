@@ -51,17 +51,20 @@ function Profile() {
 
   const handleLogout = async () => {
     try {
+      dispatch(clearUser());
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/auth/logout`,
         {
           method: "POST",
           credentials: "include",
+          headers: {
+            "Cache-Control": "no-cache",
+          },
         }
       );
 
       if (!response.ok) throw new Error("Failed to logout");
 
-      dispatch(clearUser());
       navigate("/login");
     } catch (error) {
       console.error("Failed to logout:", error);

@@ -3,15 +3,12 @@ import { useSelector } from "react-redux";
 import { Input } from "@progress/kendo-react-inputs";
 import { Button } from "@progress/kendo-react-buttons";
 
-// Throttle function limit API calls
-const throttle = (func, delay) => {
-  let lastCall = 0;
+// Debounce function to delay API calls until typing stops
+const debounce = (func, delay) => {
+  let timeoutId;
   return (...args) => {
-    const now = new Date().getTime();
-    if (now - lastCall >= delay) {
-      lastCall = now;
-      func(...args);
-    }
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), delay);
   };
 };
 
@@ -20,15 +17,32 @@ function AddEntry({ onEntryAdded, date }) {
   const [entryText, setEntryText] = useState("");
   const [suggestion, setSuggestion] = useState("");
   const [loading, setLoading] = useState(false);
-
   const inputRef = useRef(null);
+  const abortControllerRef = useRef(null);
 
-  // Function to fetch suggestions
+  // Cleanup abort controller on unmount
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
+  // Function to fetch suggestions with abort control
   const fetchSuggestions = async (text) => {
     if (!text.trim()) {
       setSuggestion("");
       return;
     }
+
+    // Abort previous request if exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
 
     try {
       const response = await fetch(
@@ -37,6 +51,7 @@ function AddEntry({ onEntryAdded, date }) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ content: text }),
+          signal: abortController.signal,
         }
       );
 
@@ -46,21 +61,27 @@ function AddEntry({ onEntryAdded, date }) {
       const suggestionSuffix = data.suggestions?.[0] || "";
 
       setSuggestion(suggestionSuffix);
-      console.log("called");
     } catch (error) {
-      console.error("Error fetching suggestions:", error);
-      setSuggestion("");
+      if (error.name !== "AbortError") {
+        console.error("Error fetching suggestions:", error);
+        setSuggestion("");
+      }
+    } finally {
+      if (abortControllerRef.current === abortController) {
+        abortControllerRef.current = null;
+      }
     }
   };
 
-  const throttledFetchSuggestions = useCallback(
-    throttle(fetchSuggestions, 3000),
+  const debouncedFetchSuggestions = useCallback(
+    debounce(fetchSuggestions, 2000),
     []
   );
   const handleChange = (e) => {
     const value = e.target.value;
     setEntryText(value);
-    throttledFetchSuggestions(value);
+    debouncedFetchSuggestions(value);
+    setSuggestion("");
   };
 
   const handleKeyDown = (e) => {
@@ -114,25 +135,47 @@ function AddEntry({ onEntryAdded, date }) {
     <div className="relative mt-6 px-4 py-6 bg-gray-50 rounded-lg border border-gray-200">
       <div className="flex gap-3 items-start">
         <div className="flex-1 relative">
-          <Input
+          <textarea
             value={entryText}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
             onBlur={() => setSuggestion("")}
-            placeholder="Write your thoughts..."
+            placeholder="How was your day?"
             ref={inputRef}
-            className="!text-base !py-3 !px-4 !rounded-lg !border-gray-300 hover:!border-blue-400 focus:!border-blue-500 focus:!ring-2 focus:!ring-blue-200"
+            rows={1}
+            className="!text-base !py-3 !px-4 !rounded-lg !border-gray-300 hover:!border-blue-400 focus:!border-blue-500 focus:!ring-2 focus:!ring-blue-200 resize-none w-full overflow-auto leading-snug"
+            style={{
+              minHeight: "48px",
+              maxHeight: "200px",
+              boxSizing: "border-box", // Ensure padding doesn't affect height calculations
+            }}
+            onInput={(e) => {
+              // Auto-resize logic
+              e.target.style.height = "auto";
+              e.target.style.height = `${Math.min(
+                e.target.scrollHeight,
+                200
+              )}px`;
+            }}
           />
 
           {/* Ghost Text Overlay */}
           {suggestion && entryText && (
-            <span className="absolute left-4 top-3.5 pointer-events-none flex items-center">
-              <span className="text-transparent pr-2">{entryText}</span>
-
-              <span className="text-gray-400 ml-[-2px] opacity-75">
-                {suggestion}
+            <div
+              className="absolute left-0 top-0 pointer-events-none w-full"
+              style={{
+                // Match textarea styling exactly
+                padding: "12px 16px", // py-3 = 12px, px-4 = 16px
+                font: "inherit", // Match font family and size
+                whiteSpace: "pre-wrap", // Match textarea wrapping behavior
+                wordBreak: "break-word", // Match textarea word breaking
+              }}
+            >
+              <span className="text-transparent">
+                {entryText}
+                <span className="text-gray-400 opacity-75">{suggestion}</span>
               </span>
-            </span>
+            </div>
           )}
         </div>
 
