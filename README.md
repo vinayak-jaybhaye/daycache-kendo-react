@@ -1,12 +1,40 @@
-# React + Vite
+# DayCache - AI-Powered Digital Diary
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+DayCache is a modern digital diary that helps you record your thoughts, track your activities, and get AI-generated summaries of your day. With a sleek and intuitive interface, DayCache makes journaling effortless and enjoyable.
 
-Currently, two official plugins are available:
+In this app I've mostly used Kendo-react components for UI.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
+- **Cache Chat** – Ask about any day you've written about.
+- **AI Summary** – Automatically summarizes your daily entries.
+- **Smart Autocomplete** – Helps complete your journal entries smoothly.
+- **Intuitive UI** – Clean and minimal design for a distraction-free writing experience.
 
-## Expanding the ESLint configuration
+## Live Demo & Code
+**Note:** This app requires email registration. However, demo credentials are provided on the login page.
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+🔗 Live Demo: [DayCache](https://daycache-kendo-react.vercel.app/)  
+💻 GitHub Repository: [Project Link](https://github.com/vinayak-jaybhaye/daycache-kendo-react)
+
+## Installation
+To set up the project locally:
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/vinayak-jaybhaye/daycache-kendo-react
+   cd daycache-kendo-react
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+3. Start the development server:
+   ```sh
+   npm run dev
+   ```
+
+## Contributing
+Contributions are welcome! Feel free to submit issues and pull requests.
+
+Happy journaling! ✨
+
